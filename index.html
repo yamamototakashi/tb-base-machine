@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>Bass Machine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0a0b0d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bass" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="splash" class="splash">
+    <div class="splash-inner">
+      <div class="splash-title">BASS MACHINE</div>
+      <div class="splash-sub">Fretless &middot; Wood</div>
+      <button id="startBtn" class="start-btn">TAP TO START</button>
+      <div class="splash-hint">iPhone の「ホーム画面に追加」で全画面起動できます</div>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-dot"></div>
+        <div class="brand-text">BASS MACHINE</div>
+      </div>
+      <div class="topbar-right">
+        <div class="bpm-readout">
+          <span id="bpmValue">120</span><span class="bpm-unit">BPM</span>
+        </div>
+        <button id="playBtn" class="icon-btn play" aria-label="Play">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M7 5v14l12-7z" fill="currentColor"/></svg>
+        </button>
+        <button id="clearBtn" class="icon-btn clear" aria-label="Clear">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zM9 4h6l1 2H8l1-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- VOICE + PRESETS -->
+      <section class="panel voice-panel">
+        <div class="voice-tabs">
+          <button class="voice-tab active" data-voice="fretless">FRETLESS</button>
+          <button class="voice-tab" data-voice="wood">WOOD</button>
+        </div>
+        <div class="preset-row" id="presetRow">
+          <!-- preset chips injected -->
+        </div>
+      </section>
+
+      <!-- STEP GRID -->
+      <section class="panel grid-panel">
+        <div class="step-grid" id="stepGrid">
+          <!-- 16 steps injected -->
+        </div>
+      </section>
+
+      <!-- STEP EDITOR -->
+      <section class="panel editor-panel">
+        <div class="editor-header">
+          <div class="editor-title">STEP <span id="editorStepIdx">1</span></div>
+          <div class="editor-toggles">
+            <button class="chip toggle" id="togActive">ON</button>
+            <button class="chip toggle" id="togAccent">ACC</button>
+            <button class="chip toggle" id="togSlide">SLI</button>
+            <div class="oct-group">
+              <button class="chip oct" data-oct="-1">-1</button>
+              <button class="chip oct active" data-oct="0">0</button>
+              <button class="chip oct" data-oct="1">+1</button>
+            </div>
+          </div>
+        </div>
+        <div class="keyboard" id="keyboard">
+          <!-- 12 notes injected -->
+        </div>
+      </section>
+
+      <!-- SOUND PARAMS -->
+      <section class="panel params-panel">
+        <div class="params-grid" id="paramsGrid">
+          <!-- sliders injected -->
+        </div>
+      </section>
+
+      <!-- BPM / SWING / PATTERN -->
+      <section class="panel transport-panel">
+        <div class="slider-row">
+          <label class="slider-label">BPM <span id="bpmSlVal">120</span></label>
+          <input type="range" id="bpmSlider" min="50" max="180" step="1" value="120" />
+        </div>
+        <div class="slider-row">
+          <label class="slider-label">SWING <span id="swingVal">0%</span></label>
+          <input type="range" id="swingSlider" min="0" max="40" step="1" value="0" />
+        </div>
+        <div class="action-row">
+          <button class="action-btn" id="randomBtn">RANDOM</button>
+          <button class="action-btn" id="saveBtn">SAVE</button>
+          <button class="action-btn" id="loadBtn">LOAD</button>
+          <button class="action-btn" id="exportBtn">EXPORT</button>
+        </div>
+        <div class="demo-row">
+          <div class="demo-label">DEMO</div>
+          <div class="demo-chips" id="demoRow"></div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>v1.0 &middot; Web Audio &middot; PWA</span>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/synth.js"></script>
+  <script src="js/sequencer.js"></script>
+  <script src="js/presets.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

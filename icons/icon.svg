@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#1e212a"/>
+      <stop offset="100%" stop-color="#07080a"/>
+    </radialGradient>
+    <radialGradient id="dot" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffd37a"/>
+      <stop offset="55%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#7d4d0a"/>
+    </radialGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2e39"/>
+      <stop offset="100%" stop-color="#15171d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background rounded square -->
+  <rect x="0" y="0" width="512" height="512" rx="112" ry="112" fill="url(#bg)"/>
+
+  <!-- 8 step LEDs in 2 rows (mini 303 vibe) -->
+  <g>
+    <g transform="translate(64,170)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#f5a623"/>
+    </g>
+    <g transform="translate(128,170)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#2e3240"/>
+    </g>
+    <g transform="translate(192,170)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#f5a623"/>
+    </g>
+    <g transform="translate(256,170)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#2e3240"/>
+    </g>
+    <g transform="translate(320,170)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#f5a623"/>
+    </g>
+    <g transform="translate(384,170)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#3ea6a1"/>
+    </g>
+
+    <g transform="translate(64,260)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#2e3240"/>
+    </g>
+    <g transform="translate(128,260)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#f5a623"/>
+    </g>
+    <g transform="translate(192,260)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#f5a623"/>
+    </g>
+    <g transform="translate(256,260)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#2e3240"/>
+    </g>
+    <g transform="translate(320,260)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#2e3240"/>
+    </g>
+    <g transform="translate(384,260)">
+      <rect width="48" height="72" rx="10" fill="url(#bar)" stroke="#2e3240"/>
+      <circle cx="24" cy="24" r="8" fill="#f5a623"/>
+    </g>
+  </g>
+
+  <!-- Big amber dot = the signature -->
+  <circle cx="256" cy="110" r="34" fill="url(#dot)"/>
+
+  <!-- wordmark -->
+  <g font-family="-apple-system, Helvetica, Arial, sans-serif" font-weight="700" fill="#e7e9ef" text-anchor="middle">
+    <text x="256" y="400" font-size="42" letter-spacing="8">BASS</text>
+    <text x="256" y="446" font-size="20" letter-spacing="10" fill="#f5a623">MACHINE</text>
+  </g>
+</svg>
