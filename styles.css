@@ -85,6 +85,24 @@ body {
   margin-top: 24px;
   color: var(--text-faint); font-size: 12px;
 }
+.splash-version {
+  margin-top: 18px;
+  font-size: 11px; letter-spacing: 0.2em;
+  color: var(--accent);
+  opacity: 0.8;
+}
+.splash-diag {
+  margin-top: 10px;
+  min-height: 16px;
+  font-size: 11px;
+  color: #ffbaba;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.start-btn.pressed {
+  color: var(--accent-hot);
+  box-shadow: 0 0 0 1px rgba(245,166,35,0.35), 0 0 18px rgba(245,166,35,0.45);
+}
 
 /* ---------- App shell ---------- */
 .app {

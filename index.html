@@ -20,8 +20,13 @@
     <div class="splash-inner">
       <div class="splash-title">BASS MACHINE</div>
       <div class="splash-sub">Fretless &middot; Wood</div>
-      <button id="startBtn" class="start-btn">TAP TO START</button>
+      <button id="startBtn" class="start-btn"
+              onclick="try{this.textContent='STARTING...';this.classList.add('pressed');if(window.__onStart){window.__onStart(event);}else{document.getElementById('diag').textContent='JS not loaded yet — please wait or reload';}}catch(err){document.getElementById('diag').textContent='inline err: '+err.message;}">
+        TAP TO START
+      </button>
       <div class="splash-hint">iPhone の「ホーム画面に追加」で全画面起動できます</div>
+      <div class="splash-version" id="splashVer">v3 &middot; build <span id="buildTag">2026-04-15</span></div>
+      <div class="splash-diag" id="diag"></div>
     </div>
   </div>
 
@@ -114,7 +119,7 @@
       </section>
 
       <footer class="footer">
-        <span>v1.0 &middot; Web Audio &middot; PWA</span>
+        <span>v3 &middot; Web Audio &middot; PWA &middot; <span id="footerBuild">2026-04-15</span></span>
       </footer>
     </main>
   </div>
@@ -122,15 +127,27 @@
   <!-- Toast -->
   <div id="toast" class="toast"></div>
 
-  <script src="js/synth.js"></script>
-  <script src="js/sequencer.js"></script>
-  <script src="js/presets.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+    // Surface script load errors on splash so we can see them on iPhone without DevTools.
+    window.addEventListener('error', function (e) {
+      var d = document.getElementById('diag');
+      if (!d) return;
+      var src = (e.target && e.target.src) ? (' src=' + e.target.src.split('/').pop()) : '';
+      d.textContent = 'load err: ' + (e.message || 'script failed') + src;
+    }, true);
+  </script>
+  <script src="js/synth.js?v=3" onerror="document.getElementById('diag').textContent='synth.js failed to load'"></script>
+  <script src="js/sequencer.js?v=3" onerror="document.getElementById('diag').textContent='sequencer.js failed to load'"></script>
+  <script src="js/presets.js?v=3" onerror="document.getElementById('diag').textContent='presets.js failed to load'"></script>
+  <script src="js/storage.js?v=3" onerror="document.getElementById('diag').textContent='storage.js failed to load'"></script>
+  <script src="js/app.js?v=3" onerror="document.getElementById('diag').textContent='app.js failed to load'"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').then(function (reg) {
+          // Force update check on every load so new versions propagate quickly.
+          try { reg.update(); } catch (e) {}
+        }).catch(function () {});
       });
     }
   </script>

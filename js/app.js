@@ -3,6 +3,10 @@
    =========================================================== */
 
 (() => {
+  // ---------- Version ----------
+  const APP_VERSION = 'v3';
+  const BUILD_TAG = '2026-04-15';
+  window.__APP_VERSION = APP_VERSION;
   // ---------- Constants ----------
   const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
   const SHARP_SET = new Set(['C#','D#','F#','G#','A#']);
@@ -611,12 +615,22 @@
     console.error(msg);
   }
 
+  // Expose for the inline onclick in HTML (in case addEventListener ones don't fire)
+  window.__onStart = onStart;
+
   // Bind multiple event types; some iOS versions/contexts don't fire pointerdown reliably.
   ['click', 'pointerdown', 'touchend'].forEach(evt => {
     startBtn.addEventListener(evt, onStart, { passive: false });
   });
   // Fallback — tap anywhere on splash
   splash.addEventListener('click', onStart, { passive: false });
+
+  // Write build tags into DOM so the user can verify deployment version.
+  // If this text appears on screen, app.js HAS loaded successfully.
+  const _bt = document.getElementById('buildTag');
+  if (_bt) _bt.textContent = BUILD_TAG + ' [js-ok]';
+  const _fb = document.getElementById('footerBuild');
+  if (_fb) _fb.textContent = BUILD_TAG;
 
   // Surface unexpected JS errors on screen (helps diagnose iOS Safari issues)
   window.addEventListener('error', (e) => {

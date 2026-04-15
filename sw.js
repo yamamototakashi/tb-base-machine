@@ -2,7 +2,7 @@
    sw.js — Minimal service worker (offline shell)
    =========================================================== */
 
-const VERSION = 'bass-machine-v2';
+const VERSION = 'bass-machine-v3';
 const ASSETS = [
   './',
   './index.html',
