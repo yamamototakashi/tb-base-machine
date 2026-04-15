@@ -4,8 +4,8 @@
 
 (() => {
   // ---------- Version ----------
-  const APP_VERSION = 'v3';
-  const BUILD_TAG = '2026-04-15';
+  const APP_VERSION = 'v4';
+  const BUILD_TAG = '2026-04-15b';
   window.__APP_VERSION = APP_VERSION;
   // ---------- Constants ----------
   const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -543,36 +543,50 @@
   }
 
   // ---------- Boot ----------
-  async function boot() {
-    await AudioEngine.resume();
-    voiceMgr.init();
-    voiceMgr.setVoice(state.voice);
-    voiceMgr.setParams(state.params);
+  // Sync boot (no await) — AudioContext is already unlocked in the gesture handler.
+  // Awaiting ctx.resume() here can hang forever on iOS Safari.
+  function boot() {
+    const diag = (m) => {
+      const el = document.getElementById('diag');
+      if (el) el.textContent = m;
+    };
+    try {
+      diag('init voices...');
+      voiceMgr.init();
+      voiceMgr.setVoice(state.voice);
+      voiceMgr.setParams(state.params);
 
-    seq = new Sequencer({ onScheduleStep });
-    seq.setBpm(state.bpm);
-    seq.setSwing(state.swing);
+      diag('init scheduler...');
+      seq = new Sequencer({ onScheduleStep });
+      seq.setBpm(state.bpm);
+      seq.setSwing(state.swing);
 
-    buildStepGrid();
-    buildKeyboard();
-    buildPresetRow();
-    buildDemoRow();
-    buildParams();
-    bindUI();
+      diag('build ui...');
+      buildStepGrid();
+      buildKeyboard();
+      buildPresetRow();
+      buildDemoRow();
+      buildParams();
+      bindUI();
 
-    // initial load — load last saved if any, else first demo
-    const last = Storage.getLast();
-    if (last) loadPattern(last);
-    else loadPattern(DEMO_PATTERNS[0]);
+      diag('load pattern...');
+      const last = Storage.getLast();
+      if (last) loadPattern(last);
+      else loadPattern(DEMO_PATTERNS[0]);
 
-    renderVoiceTabs();
-    renderSteps();
-    renderEditor();
+      renderVoiceTabs();
+      renderSteps();
+      renderEditor();
 
-    splash.classList.add('hidden');
-    app.classList.remove('hidden');
+      diag('done');
+      splash.classList.add('hidden');
+      app.classList.remove('hidden');
 
-    requestAnimationFrame(rafLoop);
+      requestAnimationFrame(rafLoop);
+    } catch (err) {
+      showBootError('boot error: ' + (err && err.stack ? String(err.stack).slice(0, 500) : err));
+      throw err;
+    }
   }
 
   // One-shot start trigger — iOS-safe: unlock audio synchronously in the gesture,
@@ -600,11 +614,12 @@
       return;
     }
 
-    // Proceed with full boot (async is fine now that AC is unlocked)
-    boot().catch(err => {
+    // Proceed with full boot. boot() is synchronous and reports its own errors.
+    try { boot(); }
+    catch (err) {
       started = false;
-      showBootError('Boot failed: ' + (err && err.message ? err.message : err));
-    });
+      showBootError('boot failed: ' + (err && err.message ? err.message : err));
+    }
   }
 
   function showBootError(msg) {
