@@ -571,15 +571,58 @@
     requestAnimationFrame(rafLoop);
   }
 
-  // One-shot start trigger
-  function onStart() {
-    startBtn.removeEventListener('pointerdown', onStart);
+  // One-shot start trigger — iOS-safe: unlock audio synchronously in the gesture,
+  // then run the rest async. Bind multiple event types for reliability.
+  let started = false;
+  function onStart(e) {
+    if (started) return;
+    started = true;
+    try { if (e && e.preventDefault) e.preventDefault(); } catch (_) {}
+
+    // Unlock AudioContext inside the gesture frame
+    try {
+      const ctx = AudioEngine.ensureCtx();
+      // create + play a silent buffer — classic iOS unlock trick
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+      const p = ctx.resume();
+      if (p && typeof p.then === 'function') p.catch(() => {});
+    } catch (err) {
+      started = false;
+      showBootError('AudioContext init failed: ' + (err && err.message ? err.message : err));
+      return;
+    }
+
+    // Proceed with full boot (async is fine now that AC is unlocked)
     boot().catch(err => {
-      console.error(err);
-      alert('Audio init failed: ' + err.message);
+      started = false;
+      showBootError('Boot failed: ' + (err && err.message ? err.message : err));
     });
   }
-  startBtn.addEventListener('pointerdown', onStart, { once: true });
+
+  function showBootError(msg) {
+    const div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:12px;right:12px;bottom:24px;padding:12px;background:#3a1414;color:#ffbaba;border:1px solid #a33;border-radius:10px;font-size:12px;z-index:200;line-height:1.4;';
+    div.textContent = msg;
+    document.body.appendChild(div);
+    console.error(msg);
+  }
+
+  // Bind multiple event types; some iOS versions/contexts don't fire pointerdown reliably.
+  ['click', 'pointerdown', 'touchend'].forEach(evt => {
+    startBtn.addEventListener(evt, onStart, { passive: false });
+  });
+  // Fallback — tap anywhere on splash
+  splash.addEventListener('click', onStart, { passive: false });
+
+  // Surface unexpected JS errors on screen (helps diagnose iOS Safari issues)
+  window.addEventListener('error', (e) => {
+    if (!started) return; // before start, ignore noise
+    showBootError('JS error: ' + (e.message || e.error));
+  });
 
   // Also handle visibility: stop when backgrounded (iOS will anyway)
   document.addEventListener('visibilitychange', () => {
